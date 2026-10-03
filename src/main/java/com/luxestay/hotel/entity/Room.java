@@ -36,10 +36,10 @@ public class Room {
     @Column(columnDefinition = "TEXT")
     private String amenities;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", columnDefinition = "LONGTEXT")
     private String imageUrl;
 
-    @Column(name = "gallery_images", columnDefinition = "TEXT")
+    @Column(name = "gallery_images", columnDefinition = "LONGTEXT")
     private String galleryImages; // JSON or comma-separated list of image URLs
 
     public Room() {}
