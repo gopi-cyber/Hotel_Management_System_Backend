@@ -39,6 +39,9 @@ public class Room {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "gallery_images", columnDefinition = "TEXT")
+    private String galleryImages; // JSON or comma-separated list of image URLs
+
     public Room() {}
 
     public Long getId() { return id; }
@@ -73,4 +76,7 @@ public class Room {
 
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    public String getGalleryImages() { return galleryImages; }
+    public void setGalleryImages(String galleryImages) { this.galleryImages = galleryImages; }
 }

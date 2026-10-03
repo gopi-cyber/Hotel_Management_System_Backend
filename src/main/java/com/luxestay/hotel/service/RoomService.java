@@ -41,6 +41,7 @@ public class RoomService {
             if (updates.getDescription() != null) r.setDescription(updates.getDescription());
             if (updates.getAmenities() != null) r.setAmenities(updates.getAmenities());
             if (updates.getImageUrl() != null) r.setImageUrl(updates.getImageUrl());
+            if (updates.getGalleryImages() != null) r.setGalleryImages(updates.getGalleryImages());
             return roomRepository.save(r);
         });
     }
