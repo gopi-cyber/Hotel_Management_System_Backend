@@ -31,7 +31,13 @@ public class UserService {
     }
 
     public Optional<UserResponse> authenticate(LoginRequest req) {
-        return userRepository.findByUsername(req.getUsername())
+        if (req.getUsername() == null || req.getUsername().trim().isEmpty()) {
+            return Optional.empty();
+        }
+        if (req.getPassword() == null || req.getPassword().isEmpty()) {
+            return Optional.empty();
+        }
+        return userRepository.findByUsername(req.getUsername().trim())
                 .filter(u -> {
                     String stored = u.getPassword();
                     if (stored == null) return false;
@@ -45,19 +51,32 @@ public class UserService {
     }
 
     public UserResponse register(RegisterRequest req) {
-        if (userRepository.existsByUsername(req.getUsername())) {
+        if (req.getUsername() == null || req.getUsername().trim().length() < 3) {
+            throw new RuntimeException("Username must be at least 3 characters");
+        }
+        if (req.getPassword() == null || req.getPassword().length() < 6) {
+            throw new RuntimeException("Password must be at least 6 characters");
+        }
+        if (req.getEmail() == null || !req.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new RuntimeException("A valid email address is required");
+        }
+        String cleanPhone = req.getPhone() != null ? req.getPhone().replaceAll("\\D", "") : "";
+        if (cleanPhone.length() < 10) {
+            throw new RuntimeException("Valid 10-digit mobile number is required");
+        }
+        if (userRepository.existsByUsername(req.getUsername().trim())) {
             throw new RuntimeException("Username already exists");
         }
-        if (userRepository.existsByEmail(req.getEmail())) {
+        if (userRepository.existsByEmail(req.getEmail().trim().toLowerCase())) {
             throw new RuntimeException("Email already registered");
         }
 
         User u = new User();
-        u.setUsername(req.getUsername());
+        u.setUsername(req.getUsername().trim());
         u.setPassword(passwordEncoder.encode(req.getPassword()));
-        u.setName(req.getName());
-        u.setEmail(req.getEmail());
-        u.setPhone(req.getPhone());
+        u.setName(req.getName() != null && !req.getName().trim().isEmpty() ? req.getName().trim() : req.getUsername().trim());
+        u.setEmail(req.getEmail().trim().toLowerCase());
+        u.setPhone(cleanPhone.length() >= 10 ? cleanPhone.substring(cleanPhone.length() - 10) : cleanPhone);
         u.setRole(req.getRole() != null ? req.getRole().toLowerCase() : "guest");
 
         User saved = userRepository.save(u);

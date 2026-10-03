@@ -26,6 +26,15 @@ public class RoomService {
     }
 
     public Room createRoom(Room room) {
+        if (room.getRoomNumber() == null || room.getRoomNumber().trim().isEmpty()) {
+            throw new RuntimeException("Room number is required");
+        }
+        if (room.getName() == null || room.getName().trim().isEmpty()) {
+            throw new RuntimeException("Room name is required");
+        }
+        if (room.getPricePerNight() == null || room.getPricePerNight().doubleValue() <= 0) {
+            throw new RuntimeException("Price per night must be greater than 0");
+        }
         return roomRepository.save(room);
     }
 

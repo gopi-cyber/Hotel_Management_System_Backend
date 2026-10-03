@@ -31,6 +31,22 @@ public class BookingService {
     }
 
     public Booking createBooking(Booking booking) {
+        if (booking.getGuestName() == null || booking.getGuestName().trim().isEmpty()) {
+            throw new RuntimeException("Guest name is required");
+        }
+        if (booking.getGuestEmail() == null || !booking.getGuestEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new RuntimeException("Valid guest email is required");
+        }
+        if (booking.getGuestPhone() != null) {
+            String cleanPhone = booking.getGuestPhone().replaceAll("\\D", "");
+            if (cleanPhone.length() < 10) {
+                throw new RuntimeException("Valid 10-digit guest phone number is required");
+            }
+            booking.setGuestPhone(cleanPhone.length() >= 10 ? cleanPhone.substring(cleanPhone.length() - 10) : cleanPhone);
+        }
+        if (booking.getCheckInDate() == null || booking.getCheckOutDate() == null) {
+            throw new RuntimeException("Check-in and check-out dates are required");
+        }
         if (booking.getRoomNumber() == null && booking.getRoomId() != null) {
             roomRepository.findById(booking.getRoomId())
                     .ifPresent(r -> booking.setRoomNumber(r.getRoomNumber()));

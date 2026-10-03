@@ -33,6 +33,10 @@ public class CheckInService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found: " + bookingId));
 
+        if (idNumber == null || idNumber.trim().isEmpty()) {
+            throw new RuntimeException("Guest ID proof number is required for check-in");
+        }
+
         booking.setStatus("checked_in");
         bookingRepository.save(booking);
 

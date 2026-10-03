@@ -26,6 +26,19 @@ public class StaffService {
     }
 
     public Staff createStaff(Staff staff) {
+        if (staff.getName() == null || staff.getName().trim().isEmpty()) {
+            throw new RuntimeException("Staff name is required");
+        }
+        if (staff.getEmail() != null && !staff.getEmail().trim().isEmpty() && !staff.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new RuntimeException("Valid staff email is required");
+        }
+        if (staff.getPhone() != null && !staff.getPhone().trim().isEmpty()) {
+            String cleanPhone = staff.getPhone().replaceAll("\\D", "");
+            if (cleanPhone.length() < 10) {
+                throw new RuntimeException("Valid 10-digit staff phone number is required");
+            }
+            staff.setPhone(cleanPhone.length() >= 10 ? cleanPhone.substring(cleanPhone.length() - 10) : cleanPhone);
+        }
         return staffRepository.save(staff);
     }
 
