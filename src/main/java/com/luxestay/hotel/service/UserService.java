@@ -61,8 +61,8 @@ public class UserService {
             throw new RuntimeException("A valid email address is required");
         }
         String cleanPhone = req.getPhone() != null ? req.getPhone().replaceAll("\\D", "") : "";
-        if (cleanPhone.length() < 10) {
-            throw new RuntimeException("Valid 10-digit mobile number is required");
+        if (cleanPhone.length() < 8) {
+            throw new RuntimeException("Valid mobile phone number is required (at least 8 digits)");
         }
         if (userRepository.existsByUsername(req.getUsername().trim())) {
             throw new RuntimeException("Username already exists");

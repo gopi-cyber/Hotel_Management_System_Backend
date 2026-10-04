@@ -32,8 +32,8 @@ public class OtpController {
     @PostMapping("/send")
     public ResponseEntity<?> sendOtp(@RequestBody Map<String, String> body) {
         String phone = cleanPhone(body.get("phone"));
-        if (phone.length() < 10) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Valid 10-digit mobile number required"));
+        if (phone.length() < 8) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Valid mobile number required"));
         }
 
         String code = String.valueOf((int) (100000 + Math.random() * 900000));
@@ -44,7 +44,7 @@ public class OtpController {
         return ResponseEntity.ok(Map.of(
             "success", true,
             "phone", phone,
-            "message", "OTP generated and dispatched to mobile +91 " + (phone.length() >= 10 ? phone.substring(phone.length() - 10) : phone),
+            "message", "OTP generated and ready for verification",
             "otp", code,
             "expiresInSeconds", 300
         ));
