@@ -54,8 +54,8 @@ public class UserService {
         if (req.getUsername() == null || req.getUsername().trim().length() < 3) {
             throw new RuntimeException("Username must be at least 3 characters");
         }
-        if (req.getPassword() == null || req.getPassword().length() < 6) {
-            throw new RuntimeException("Password must be at least 6 characters");
+        if (req.getPassword() == null || req.getPassword().length() < 3) {
+            throw new RuntimeException("Password must be at least 3 characters");
         }
         if (req.getEmail() == null || !req.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             throw new RuntimeException("A valid email address is required");
