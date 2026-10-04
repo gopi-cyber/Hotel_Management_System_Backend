@@ -54,8 +54,13 @@ public class UserService {
         if (req.getUsername() == null || req.getUsername().trim().length() < 3) {
             throw new RuntimeException("Username must be at least 3 characters");
         }
-        if (req.getPassword() == null || req.getPassword().length() < 3) {
-            throw new RuntimeException("Password must be at least 3 characters");
+        if (req.getPassword() == null || req.getPassword().length() < 6) {
+            throw new RuntimeException("Password must be at least 6 characters");
+        }
+        // Password complexity: 1 uppercase, 1 lowercase, 1 digit, 1 special character
+        String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&_#^~()+\\-=\\[\\]{}|;:'\",.<>/?]).+$";
+        if (!req.getPassword().matches(passwordRegex)) {
+            throw new RuntimeException("Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character");
         }
         if (req.getEmail() == null || !req.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             throw new RuntimeException("A valid email address is required");

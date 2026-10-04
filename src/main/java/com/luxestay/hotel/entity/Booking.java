@@ -45,6 +45,15 @@ public class Booking {
     @Column(nullable = false)
     private String status = "confirmed"; // confirmed, checked_in, checked_out, cancelled
 
+    @Column(name = "kyc_verified")
+    private Boolean kycVerified = false;
+
+    @Column(name = "kyc_doc_type")
+    private String kycDocType;
+
+    @Column(name = "kyc_doc_number")
+    private String kycDocNumber;
+
     @Column(name = "special_requests", columnDefinition = "TEXT")
     private String specialRequests;
 
@@ -94,6 +103,15 @@ public class Booking {
 
     public String getSpecialRequests() { return specialRequests; }
     public void setSpecialRequests(String specialRequests) { this.specialRequests = specialRequests; }
+
+    public Boolean getKycVerified() { return kycVerified; }
+    public void setKycVerified(Boolean kycVerified) { this.kycVerified = kycVerified; }
+
+    public String getKycDocType() { return kycDocType; }
+    public void setKycDocType(String kycDocType) { this.kycDocType = kycDocType; }
+
+    public String getKycDocNumber() { return kycDocNumber; }
+    public void setKycDocNumber(String kycDocNumber) { this.kycDocNumber = kycDocNumber; }
 
     public Double getIncidentalsTotal() { return incidentalsTotal; }
     public void setIncidentalsTotal(Double incidentalsTotal) { this.incidentalsTotal = incidentalsTotal; }

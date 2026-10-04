@@ -37,13 +37,13 @@ public class BookingService {
         if (booking.getGuestEmail() == null || !booking.getGuestEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             throw new RuntimeException("Valid guest email is required");
         }
-        if (booking.getGuestPhone() != null) {
-            String cleanPhone = booking.getGuestPhone().replaceAll("\\D", "");
-            if (cleanPhone.length() < 10) {
-                throw new RuntimeException("Valid 10-digit guest phone number is required");
-            }
-            booking.setGuestPhone(cleanPhone.length() >= 10 ? cleanPhone.substring(cleanPhone.length() - 10) : cleanPhone);
-        }
+  if (booking.getGuestPhone() != null) {
+      String cleanPhone = booking.getGuestPhone().replaceAll("\\D", "");
+      if (cleanPhone.length() < 8) {
+          throw new RuntimeException("Valid guest phone number is required (at least 8 digits)");
+      }
+      booking.setGuestPhone(cleanPhone.length() >= 10 ? cleanPhone.substring(cleanPhone.length() - 10) : cleanPhone);
+  }
         if (booking.getCheckInDate() == null || booking.getCheckOutDate() == null) {
             throw new RuntimeException("Check-in and check-out dates are required");
         }
@@ -65,6 +65,9 @@ public class BookingService {
             if (updates.getPaymentStatus() != null) b.setPaymentStatus(updates.getPaymentStatus());
             if (updates.getStatus() != null) b.setStatus(updates.getStatus());
             if (updates.getSpecialRequests() != null) b.setSpecialRequests(updates.getSpecialRequests());
+            if (updates.getKycVerified() != null) b.setKycVerified(updates.getKycVerified());
+            if (updates.getKycDocType() != null) b.setKycDocType(updates.getKycDocType());
+            if (updates.getKycDocNumber() != null) b.setKycDocNumber(updates.getKycDocNumber());
             if (updates.getIncidentalsTotal() != null) b.setIncidentalsTotal(updates.getIncidentalsTotal());
             return bookingRepository.save(b);
         });
