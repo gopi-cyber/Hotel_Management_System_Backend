@@ -32,3 +32,8 @@ Startup synced user -> staff: gopinath (gopinath@gmail.com)
 2026-10-05T14:16:27.232+05:30  WARN 29604 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
 2026-10-05T14:16:29.728+05:30  INFO 29604 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
 2026-10-05T14:16:29.991+05:30  INFO 29604 --- [           main] c.l.hotel.HotelBackendApplication        : Started HotelBackendApplication in 15.86 seconds (process running for 17.073)
+2026-10-05T14:17:11.580+05:30  INFO 29604 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-05T14:17:11.580+05:30  INFO 29604 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-05T14:17:11.593+05:30  INFO 29604 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 13 ms
+2026-10-05T14:52:32.827+05:30  WARN 29604 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m11s441ms706µs700ns).
+2026-10-05T15:04:36.828+05:30  WARN 29604 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=3m3s661ms383µs500ns).

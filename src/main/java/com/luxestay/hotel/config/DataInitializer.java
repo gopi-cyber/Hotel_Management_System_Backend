@@ -1,8 +1,11 @@
 package com.luxestay.hotel.config;
 
+import com.luxestay.hotel.entity.CheckInRecord;
 import com.luxestay.hotel.entity.Room;
 import com.luxestay.hotel.entity.Staff;
 import com.luxestay.hotel.entity.User;
+import com.luxestay.hotel.repository.BookingRepository;
+import com.luxestay.hotel.repository.CheckInRecordRepository;
 import com.luxestay.hotel.repository.RoomRepository;
 import com.luxestay.hotel.repository.StaffRepository;
 import com.luxestay.hotel.repository.UserRepository;
@@ -10,6 +13,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import java.time.LocalDateTime;
 
 @Configuration
 public class DataInitializer {
@@ -19,6 +23,8 @@ public class DataInitializer {
             UserRepository userRepository,
             RoomRepository roomRepository,
             StaffRepository staffRepository,
+            CheckInRecordRepository checkInRecordRepository,
+            BookingRepository bookingRepository,
             PasswordEncoder passwordEncoder) {
         return args -> {
             // Check existing users and encrypt any plain text passwords

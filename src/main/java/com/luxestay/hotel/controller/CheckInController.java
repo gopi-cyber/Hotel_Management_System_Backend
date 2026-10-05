@@ -21,6 +21,16 @@ public class CheckInController {
         return ResponseEntity.ok(checkInService.getAllRecords());
     }
 
+    @PostMapping
+    public ResponseEntity<?> createRecord(@RequestBody Map<String, Object> body) {
+        return arrive(body);
+    }
+
+    @PostMapping("/process")
+    public ResponseEntity<?> process(@RequestBody Map<String, Object> body) {
+        return arrive(body);
+    }
+
     @PostMapping("/arrive")
     public ResponseEntity<?> arrive(@RequestBody Map<String, Object> body) {
         Object bookingIdObj = body.get("bookingId");
