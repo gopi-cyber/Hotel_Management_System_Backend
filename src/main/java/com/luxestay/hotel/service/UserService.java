@@ -4,7 +4,11 @@ import com.luxestay.hotel.dto.LoginRequest;
 import com.luxestay.hotel.dto.RegisterRequest;
 import com.luxestay.hotel.dto.UserResponse;
 import com.luxestay.hotel.entity.User;
+import com.luxestay.hotel.entity.Booking;
+import com.luxestay.hotel.entity.ServiceRequest;
 import com.luxestay.hotel.repository.UserRepository;
+import com.luxestay.hotel.repository.BookingRepository;
+import com.luxestay.hotel.repository.ServiceRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,12 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private BookingRepository bookingRepository;
+
+    @Autowired
+    private ServiceRequestRepository serviceRequestRepository;
 
     public UserResponse toResponse(User u) {
         return new UserResponse(
@@ -94,7 +104,11 @@ public class UserService {
 
     public Optional<UserResponse> updateRole(Long id, String role) {
         return userRepository.findById(id).map(user -> {
-            user.setRole(role.toLowerCase());
+            if (id == 1L || "admin".equalsIgnoreCase(user.getUsername())) {
+                // Keep root admin as admin
+                return toResponse(user);
+            }
+            user.setRole(role != null ? role.trim().toLowerCase() : "guest");
             return toResponse(userRepository.save(user));
         });
     }
@@ -113,7 +127,28 @@ public class UserService {
     }
 
     public boolean deleteUser(Long id) {
-        if (userRepository.existsById(id)) {
+        Optional<User> opt = userRepository.findById(id);
+        if (opt.isPresent()) {
+            User u = opt.get();
+            if (id == 1L || "admin".equalsIgnoreCase(u.getUsername())) {
+                return false; // Prevent deleting root admin
+            }
+            try {
+                if (bookingRepository != null) {
+                    List<Booking> bookings = bookingRepository.findByUserId(id);
+                    if (bookings != null && !bookings.isEmpty()) {
+                        bookingRepository.deleteAll(bookings);
+                    }
+                }
+                if (serviceRequestRepository != null) {
+                    List<ServiceRequest> reqs = serviceRequestRepository.findByUserId(id);
+                    if (reqs != null && !reqs.isEmpty()) {
+                        serviceRequestRepository.deleteAll(reqs);
+                    }
+                }
+            } catch (Exception e) {
+                // Ignore cascade errors
+            }
             userRepository.deleteById(id);
             return true;
         }
