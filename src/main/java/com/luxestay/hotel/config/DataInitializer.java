@@ -143,6 +143,61 @@ public class DataInitializer {
                 r103.setImageUrl("https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1200&q=80");
                 roomRepository.save(r103);
             }
+
+            // Bidirectional Auto-Sync on startup
+            try {
+                // 1. Sync every Staff record into Users
+                staffRepository.findAll().forEach(st -> {
+                    if (st.getEmail() != null && !st.getEmail().trim().isEmpty()) {
+                        String email = st.getEmail().trim().toLowerCase();
+                        if (userRepository.findByEmail(email).isEmpty()) {
+                            User u = new User();
+                            String prefix = email.split("@")[0].replaceAll("[^a-zA-Z0-9_]", "").toLowerCase();
+                            if (prefix.length() < 3) prefix = "staff_" + prefix;
+                            String candidate = prefix;
+                            int cnt = 1;
+                            while (userRepository.existsByUsername(candidate)) {
+                                candidate = prefix + "_" + cnt++;
+                            }
+                            u.setUsername(candidate);
+                            u.setName(st.getName());
+                            u.setEmail(email);
+                            u.setPhone(st.getPhone() != null ? st.getPhone() : "+1 (555) 019-0000");
+                            u.setPassword(passwordEncoder.encode("123"));
+                            u.setRole(st.getRole() != null && st.getRole().toLowerCase().contains("reception") ? "receptionist" : "staff");
+                            u.setDepartment(st.getDepartment());
+                            u.setShift(st.getShift());
+                            u.setEmployeeId("EMP-" + st.getId());
+                            userRepository.save(u);
+                        }
+                    }
+                });
+
+                // 2. Sync every User with staff-like role into Staff roster
+                userRepository.findAll().forEach(u -> {
+                    String r = u.getRole() != null ? u.getRole().toLowerCase() : "";
+                    if (r.contains("staff") || r.contains("reception") || r.contains("concierge") || r.contains("housekeeping")) {
+                        if (u.getEmail() != null && !u.getEmail().trim().isEmpty()) {
+                            String email = u.getEmail().trim().toLowerCase();
+                            if (staffRepository.findByEmailIgnoreCase(email).isEmpty()) {
+                                Staff st = new Staff();
+                                st.setName(u.getName() != null && !u.getName().trim().isEmpty() ? u.getName() : u.getUsername());
+                                st.setEmail(email);
+                                st.setPhone(u.getPhone() != null && !u.getPhone().trim().isEmpty() ? u.getPhone() : "+1 (555) 019-0000");
+                                st.setRole(r.contains("reception") ? "Front Desk Receptionist" : "Staff Member");
+                                st.setDepartment(u.getDepartment() != null && !u.getDepartment().trim().isEmpty() ? u.getDepartment() :
+                                        (r.contains("reception") ? "Front Desk" : "Operations"));
+                                st.setShift(u.getShift() != null && !u.getShift().trim().isEmpty() ? u.getShift() : "Morning");
+                                st.setSalary(45000.0);
+                                st.setStatus("Active");
+                                staffRepository.save(st);
+                            }
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                System.err.println("Startup auto-sync warning: " + e.getMessage());
+            }
         };
     }
 }
