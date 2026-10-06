@@ -232,6 +232,9 @@ public class UserService {
             if (updates.getName() != null) u.setName(updates.getName());
             if (updates.getEmail() != null) u.setEmail(updates.getEmail());
             if (updates.getPhone() != null) u.setPhone(updates.getPhone());
+            if (updates.getPassword() != null && !updates.getPassword().trim().isEmpty()) {
+                u.setPassword(passwordEncoder.encode(updates.getPassword().trim()));
+            }
             if (updates.getAvatarUrl() != null) u.setAvatarUrl(updates.getAvatarUrl());
             if (updates.getDepartment() != null) u.setDepartment(updates.getDepartment());
             if (updates.getShift() != null) u.setShift(updates.getShift());
