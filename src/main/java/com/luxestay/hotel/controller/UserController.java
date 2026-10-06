@@ -57,9 +57,15 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProfile(@PathVariable Long id, @RequestBody User updates) {
-        return userService.updateProfile(id, updates)
-                .<ResponseEntity<?>>map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        try {
+            return userService.updateProfile(id, updates)
+                    .<ResponseEntity<?>>map(ResponseEntity::ok)
+                    .orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403).body(Map.of("error", e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     @DeleteMapping("/{id}")

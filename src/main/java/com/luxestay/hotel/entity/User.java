@@ -36,6 +36,10 @@ public class User {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    /** Not a database column: the caller's current password, required when changing a password. */
+    @Transient
+    private String currentPassword;
+
     public User() {}
 
     public Long getId() { return id; }
@@ -73,4 +77,6 @@ public class User {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getCurrentPassword() { return currentPassword; }
+    public void setCurrentPassword(String currentPassword) { this.currentPassword = currentPassword; }
 }

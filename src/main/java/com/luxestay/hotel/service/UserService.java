@@ -233,6 +233,13 @@ public class UserService {
             if (updates.getEmail() != null) u.setEmail(updates.getEmail());
             if (updates.getPhone() != null) u.setPhone(updates.getPhone());
             if (updates.getPassword() != null && !updates.getPassword().trim().isEmpty()) {
+                String current = updates.getCurrentPassword();
+                if (current == null || current.trim().isEmpty()) {
+                    throw new IllegalArgumentException("Current password is required to change password");
+                }
+                if (u.getPassword() == null || !passwordEncoder.matches(current.trim(), u.getPassword())) {
+                    throw new SecurityException("Current password is incorrect");
+                }
                 u.setPassword(passwordEncoder.encode(updates.getPassword().trim()));
             }
             if (updates.getAvatarUrl() != null) u.setAvatarUrl(updates.getAvatarUrl());
